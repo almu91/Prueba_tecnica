@@ -29,6 +29,10 @@ class MunicipalCentersAdapter(private val municipalCenters: ArrayList<MunicipalC
         }
     }
 
+    fun cleanMunicipalCenter() {
+        this.municipalCenters.clear()
+    }
+
      class MunicipalCentersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
          fun bind(municipalCenter: MunicipalCenter) {
              itemView.apply {

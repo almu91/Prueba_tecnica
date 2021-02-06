@@ -1,6 +1,5 @@
 package com.example.pruebatecnica.data.model
 
-import android.location.Location
 import com.google.gson.annotations.SerializedName
 
 data class MunicipalCenter(

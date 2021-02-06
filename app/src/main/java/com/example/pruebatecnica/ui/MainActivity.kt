@@ -1,7 +1,9 @@
-package com.example.pruebatecnica
+package com.example.pruebatecnica.ui
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import com.example.pruebatecnica.R
 
 class MainActivity : AppCompatActivity() {
 

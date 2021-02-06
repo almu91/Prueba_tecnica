@@ -1,13 +1,9 @@
 package com.example.pruebatecnica.ui.municipal_centers
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pruebatecnica.R
 import com.example.pruebatecnica.data.connections.ApiHelper
@@ -27,6 +23,11 @@ class MunicipalCenterListFragment : Fragment() {
     private lateinit var adapterInfo: MunicipalCentersAdapter
     private lateinit var adapterCleanPoint: MunicipalCentersAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,10 +36,15 @@ class MunicipalCenterListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_municipal_centers, container, false)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu, menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            android.R.id.home -> {
-                findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            R.id.update -> {
+                getData()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -72,12 +78,17 @@ class MunicipalCenterListFragment : Fragment() {
     }
 
     private fun getData() {
+        cleanData()
+        infoHeader.visibility = View.GONE
+        cleanPointHeader.visibility = View.GONE
+        progress.visibility = View.VISIBLE
         viewModel.initData()
     }
 
 
     private fun setupObservers() {
         viewModel.cleanPointCenters.observe(viewLifecycleOwner, { parentCenter ->
+            progress.visibility = View.GONE
             municipalCenterRv.visibility = View.VISIBLE
             parentCenter?.let { p ->
                 cleanPointHeader.visibility = View.VISIBLE
@@ -88,6 +99,7 @@ class MunicipalCenterListFragment : Fragment() {
 
         viewModel.infoCenters.observe(viewLifecycleOwner, { parentCenter ->
             municipalCenterRv.visibility = View.VISIBLE
+            progress.visibility = View.GONE
             parentCenter?.let { p ->
                 infoHeader.visibility = View.VISIBLE
                 val municipalCenters: List<MunicipalCenter>? = p.centers
@@ -95,6 +107,19 @@ class MunicipalCenterListFragment : Fragment() {
             }
         })
     }
+
+    private fun cleanData() {
+        adapterInfo.apply {
+            cleanMunicipalCenter()
+            notifyDataSetChanged()
+        }
+
+        adapterCleanPoint.apply {
+            cleanMunicipalCenter()
+            notifyDataSetChanged()
+        }
+    }
+
 
     private fun retrieveInfoList(municipalCenters: List<MunicipalCenter>) {
         adapterInfo.apply {
